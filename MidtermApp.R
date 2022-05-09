@@ -96,52 +96,52 @@ ui <- dashboardPage(
             menuItem("App Instructions", tabName = "Tab1"),
             menuItem("Groundhog Search Patterns", tabName = "Tab2"),
             menuItem("Analysis", tabName = "Tab3")
-        )
-    ),
+            )
+        ),
     dashboardBody(
         tabItems(
             # First tab content
             tabItem(tabName = "Tab1",
                     h3("Steps for using this app:", align = "center"),
-                    h3("1. Choose for which term you would like to view Google search trends (additional feature)", align = "center"),
-                    h3("2. Select which variety of graph you would like to be displayed", align = "center"),
-            ),
-            
-            tabItem(tabName = "Tab2",
+                       h3("1. Choose for which term you would like to view Google search trends (additional feature)", align = "center"),
+                       h3("2. Select which variety of graph you would like to be displayed", align = "center"),
+                    ),
+          
+              tabItem(tabName = "Tab2",
                     fluidPage(
                         box(
                             uiOutput("dropdown"),
                             br(),
-                            box(
-                                uiOutput("dropdown2"),
-                                br(),
-                                box(
-                                    plotOutput(
-                                        "hogs",
-                                        width = 800,
-                                        click = NULL,
-                                        dblclick = NULL,
-                                        hover = NULL,
-                                        brush = NULL,
-                                        inline = FALSE
-                                    )
-                                )
+                        box(
+                            uiOutput("dropdown2"),
+                            br(),
+                        box(
+                            plotOutput(
+                                "hogs",
+                                width = 800,
+                                click = NULL,
+                                dblclick = NULL,
+                                hover = NULL,
+                                brush = NULL,
+                                inline = FALSE
                             )
                         )
                     )
-            ),
+              )
+        )
+    ),
             tabItem(tabName = "Tab3",
                     h3("Trend Interpretation: Trend varies for each of the terms. \"Groundhog\" and \"Punxsutawney Phil\" have positive trends, while the others see increases and decreases in popularity. ", align = "center"),
                     h3("Seasonality: Clear seasonality amongst the terms \"Groundhog\" and \"Punxsutawney Phil\" - not as much seasonality amongst other terms.", align = "center"),
                     h3("Rationale: The groundhog comes out once per year (Febuary 2nd), thus searches for \"Groundhog\" and \"Punxsutawney Phil\" (the most popular groundhog) are higher around this time.", align = "center"),
                     h3("Autocorrelation: The terms \"Groundhog\" and \"Punxsutawney Phil\" have very clear 12 month lags, meaning that values are correlated heavily with values from 12 months ago", align = "center"))
-        )
-    ))
+)
+))
 
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    
+
     output$dropdown <- renderUI(
         pickerInput(
             inputId = "select",
@@ -149,27 +149,27 @@ server <- function(input, output) {
             label = h3("Choose Your Term"),
             choices = c("Groundhog", "Punxsutawney Phil", "Milltown Mel", "Essex Ed", "Chattanooga Chuck"),
             selected = "Groundhog",
+            )
         )
-    )
-    
-    output$dropdown2 <- renderUI(
-        pickerInput(
-            inputId = "select2",
-            # multiple = T,
-            label = h3("Choose Your Plot"),
-            choices = c("Time Series", "Seasonality", "Autocorrelation", "Decomposition"),
-            selected = "Time Series",
+            
+        output$dropdown2 <- renderUI(
+            pickerInput(
+                inputId = "select2",
+                # multiple = T,
+                label = h3("Choose Your Plot"),
+                choices = c("Time Series", "Seasonality", "Autocorrelation", "Decomposition"),
+                selected = "Time Series",
+            )
         )
-    )
     
     
     
     output$hogs <- renderPlot({
         if (input$select2 == "Time Series") {
-            
-            overall_data %>% 
-                select(Month, input$select) %>%
-                autoplot()
+        
+    overall_data %>% 
+            select(Month, input$select) %>%
+        autoplot()
         }else if (input$select2 == "Seasonality"){
             overall_data %>% 
                 select(Month, input$select) %>%
@@ -203,23 +203,23 @@ server <- function(input, output) {
             overall_data %>%
                 model(
                     classical_decomposition(Groundhog, type = "multiplicative") 
-                ) %>%
+            ) %>%
                 components() %>%
                 autoplot()
         }else if (input$select2 == "Decomposition" && input$select == "Punxsutawney Phil") {
-            overall_data %>%
-                model(
-                    classical_decomposition(`Punxsutawney Phil`, type = "multiplicative") 
-                ) %>%
-                components() %>%
-                autoplot()
+        overall_data %>%
+            model(
+                classical_decomposition(`Punxsutawney Phil`, type = "multiplicative") 
+            ) %>%
+            components() %>%
+            autoplot()
         }else if (input$select2 == "Decomposition" && input$select == "Milltown Mel") {
-            overall_data %>%
-                model(
-                    classical_decomposition(`Milltown Mel`, type = "multiplicative") 
-                ) %>%
-                components() %>%
-                autoplot()
+        overall_data %>%
+            model(
+                classical_decomposition(`Milltown Mel`, type = "multiplicative") 
+            ) %>%
+            components() %>%
+            autoplot()
         }else if (input$select2 == "Decomposition" && input$select == "Essex Ed") {
             overall_data %>%
                 model(
@@ -234,9 +234,9 @@ server <- function(input, output) {
                 ) %>%
                 components() %>%
                 autoplot()    
-            
+        
         }
-    })
+        })
 }
 
 # Run the application 
