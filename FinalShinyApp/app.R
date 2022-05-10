@@ -104,17 +104,15 @@ ui <- dashboardPage(
             tabItem(tabName = "Tab1",
                     h3("Steps for using this app:", align = "center"),
                     h3("1. Choose for which term you would like to view Google search trends (additional feature)", align = "center"),
-                    h3("2. Select which variety of graph you would like to be displayed", align = "center"),
+                    h3("2. Select which variety of graph you would like to be displayed (predictive graphs show forecasts for 12 periods", align = "center"),
             ),
             
             tabItem(tabName = "Tab2",
                     fluidPage(
                         box(
-                            uiOutput("dropdown"),
-                            br(),
+                            uiOutput("dropdown")),
                             box(
-                                uiOutput("dropdown2"),
-                                br(),
+                                uiOutput("dropdown2")),
                                 box(
                                     plotOutput(
                                         "hogs",
@@ -124,18 +122,23 @@ ui <- dashboardPage(
                                         hover = NULL,
                                         brush = NULL,
                                         inline = FALSE
-                                    )
-                                )
-                            )
-                        )
-                    )
-            ),
+                                    )),
+                                           
+                                           # Copy the line below to make a slider bar 
+                                    sliderInput("slider1", label = h3("ARIMA - p"), min = 0, 
+                                                       max = 10, value = 0),
+                        sliderInput("slider2", label = h3("ARIMA - d"), min = 0, 
+                                    max = 10, value = 0),
+                    sliderInput("slider3", label = h3("ARIMA - q"), min = 0, 
+                                max = 10, value = 0)
+                    )    
+                    ),
             tabItem(tabName = "Tab3",
                     h3("Trend Interpretation: Trend varies for each of the terms. \"Groundhog\" and \"Punxsutawney Phil\" have positive trends, while the others see increases and decreases in popularity. ", align = "center"),
                     h3("Seasonality: Clear seasonality amongst the terms \"Groundhog\" and \"Punxsutawney Phil\" - not as much seasonality amongst other terms.", align = "center"),
                     h3("Rationale: The groundhog comes out once per year (Febuary 2nd), thus searches for \"Groundhog\" and \"Punxsutawney Phil\" (the most popular groundhog) are higher around this time.", align = "center"),
                     h3("Autocorrelation: The terms \"Groundhog\" and \"Punxsutawney Phil\" have very clear 12 month lags, meaning that values are correlated heavily with values from 12 months ago", align = "center"))
-        )
+        ),
     ))
 
 
@@ -157,12 +160,10 @@ server <- function(input, output) {
             inputId = "select2",
             # multiple = T,
             label = h3("Choose Your Plot"),
-            choices = c("Time Series", "Seasonality", "Autocorrelation", "Decomposition"),
+            choices = c("Time Series", "Seasonality", "Autocorrelation", "Decomposition", "Naive", "Seasonal Naive", "Mean", "Drift", "Exponential Smoothing - Holts", "Exponential Smoothing - Holts/Winters", "ARIMA - Auto", "ARIMA - Choose Parameters"),
             selected = "Time Series",
         )
     )
-    
-    
     
     output$hogs <- renderPlot({
         if (input$select2 == "Time Series") {
@@ -234,11 +235,305 @@ server <- function(input, output) {
                 ) %>%
                 components() %>%
                 autoplot()    
+        }else if (input$select2 == "Naive" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    NAIVE(`Groundhog`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Naive" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    NAIVE(`Punxsutawney Phil`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Naive" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    NAIVE(`Milltown Mel`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Naive" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    NAIVE(`Essex Ed`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Naive" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    NAIVE(`Chattanooga Chuck`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
             
+        }else if (input$select2 == "Seasonal Naive" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    SNAIVE(`Groundhog`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Seasonal Naive" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    SNAIVE(`Punxsutawney Phil`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Seasonal Naive" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    SNAIVE(`Milltown Mel`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Seasonal Naive" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    SNAIVE(`Essex Ed`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Seasonal Naive" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    SNAIVE(`Chattanooga Chuck`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Mean" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    MEAN(`Groundhog`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Mean" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    MEAN(`Punxsutawney Phil`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Mean" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    MEAN(`Milltown Mel`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Mean" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    MEAN(`Essex Ed`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Mean" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    MEAN(`Chattanooga Chuck`) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Drift" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    RW(`Groundhog`~drift()) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Drift" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    RW(`Punxsutawney Phil`~drift()) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Drift" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    RW(`Milltown Mel`~drift()) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Drift" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    RW(`Essex Ed`~drift()) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Drift" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    RW(`Chattanooga Chuck`~drift()) 
+                ) %>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+            
+        }else if (input$select2 == "Exponential Smoothing - Holts" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    ETS(`Groundhog` ~ error("A") + trend("N") + season("N")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    ETS(`Punxsutawney Phil` ~ error("A") + trend("N") + season("N")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    ETS(`Milltown Mel` ~ error("A") + trend("N") + season("N")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    ETS(`Essex Ed` ~ error("A") + trend("N") + season("N")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    ETS(`Chattanooga Chuck` ~ error("A") + trend("N") + season("N")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts/Winters" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    ETS(`Groundhog` ~ error("A") + trend("A") + season("A")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts/Winters" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    ETS(`Punxsutawney Phil` ~ error("A") + trend("A") + season("A")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts/Winters" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    ETS(`Milltown Mel` ~ error("A") + trend("A") + season("A")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts/Winters" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    ETS(`Essex Ed` ~ error("A") + trend("A") + season("A")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "Exponential Smoothing - Holts/Winters" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    ETS(`Chattanooga Chuck` ~ error("A") + trend("A") + season("A")) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Auto" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    ARIMA(`Groundhog`) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Auto" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    ARIMA(`Punxsutawney Phil`) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Auto" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    ARIMA(`Milltown Mel`) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Auto" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    ARIMA(`Essex Ed`) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Auto" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    ARIMA(`Chattanooga Chuck`) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Choose Parameters" && input$select == "Groundhog") {
+            overall_data %>%
+                model(
+                    ARIMA(`Groundhog`~ pdq(input$slider1, input$slider2, input$slider3)) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Choose Parameters" && input$select == "Punxsutawney Phil") {
+            overall_data %>%
+                model(
+                    ARIMA(`Punxsutawney Phil`~ pdq(input$slider1, input$slider2, input$slider3)) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Choose Parameters" && input$select == "Milltown Mel") {
+            overall_data %>%
+                model(
+                    ARIMA(`Milltown Mel`~ pdq(input$slider1, input$slider2, input$slider3)) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Choose Parameters" && input$select == "Essex Ed") {
+            overall_data %>%
+                model(
+                    ARIMA(`Essex Ed`~ pdq(input$slider1, input$slider2, input$slider3)) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
+        }else if (input$select2 == "ARIMA - Choose Parameters" && input$select == "Chattanooga Chuck") {
+            overall_data %>%
+                model(
+                    ARIMA(`Chattanooga Chuck`~ pdq(input$slider1, input$slider2, input$slider3)) 
+                )%>%
+                forecast(h=12) %>%
+                autoplot(overall_data)
         }
-    })
+        
+})
 }
-
 # Run the application 
 shinyApp(ui = ui, server = server)
-

@@ -1,0 +1,6 @@
+overall_data %>%
+  model(
+    NAIVE(`Groundhog`) 
+  ) %>%
+  forecast(h=12) %>%
+  autoplot(overall_data)

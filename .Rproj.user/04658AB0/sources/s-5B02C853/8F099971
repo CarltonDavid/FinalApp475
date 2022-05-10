@@ -3,7 +3,7 @@
     "path": "~/GitHub/FinalApp475/FinalShinyApp/app.R",
     "project_path": "FinalShinyApp/app.R",
     "type": "r_source",
-    "hash": "3505532584",
+    "hash": "2031233604",
     "contents": "",
     "dirty": false,
     "created": 1651606867150.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "244,0",
-        "scrollLine": "228"
+        "cursorPosition": "106,136",
+        "scrollLine": "102"
     },
     "folds": "",
-    "lastKnownWriteTime": 1651754522,
+    "lastKnownWriteTime": 1652209564,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1651754522455,
+    "last_content_update": 1652209564541,
     "read_only": false,
     "read_only_alternatives": []
 }
