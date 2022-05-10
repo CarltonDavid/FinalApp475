@@ -104,7 +104,7 @@ ui <- dashboardPage(
             tabItem(tabName = "Tab1",
                     h3("Steps for using this app:", align = "center"),
                     h3("1. Choose for which term you would like to view Google search trends (additional feature)", align = "center"),
-                    h3("2. Select which variety of graph you would like to be displayed (predictive graphs show forecasts for 12 periods", align = "center"),
+                    h3("2. Select which variety of graph you would like to be displayed (predictive graphs show forecasts for 12 periods)", align = "center"),
             ),
             
             tabItem(tabName = "Tab2",
